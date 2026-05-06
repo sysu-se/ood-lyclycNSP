@@ -9,12 +9,10 @@
 	import Header from './components/Header/index.svelte';
 	import Modal from './components/Modal/index.svelte';
 
-	gameWon.subscribe(won => {
-		if (won) {
-			game.pause();
-			modal.show('gameover');
-		}
-	});
+	$: if ($gameWon) {
+		game.pause();
+		modal.show('gameover');
+	}
 
 	onMount(() => {
 		let hash = location.hash;
