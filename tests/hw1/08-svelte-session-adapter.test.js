@@ -1,5 +1,6 @@
 import { get } from 'svelte/store'
 import { describe, expect, it } from 'vitest'
+import { makePuzzle } from './helpers/domain-api.js'
 
 describe('HW1.1 Svelte session adapter', () => {
   const storage = new Map()
@@ -31,16 +32,16 @@ describe('HW1.1 Svelte session adapter', () => {
   })
 
   it('does not ask the solver for a hint when the current board has conflicts', async () => {
+    const { encodeSudoku } = await import('../../src/node_modules/@sudoku/sencode/index.js')
     const { usedHints } = await import('../../src/node_modules/@sudoku/stores/hints.js')
     const { grid, userGrid } = await import('../../src/node_modules/@sudoku/stores/grid.js')
 
-    grid.generate('easy')
-    userGrid.set({ x: 0, y: 0 }, 1)
-    userGrid.set({ x: 1, y: 0 }, 1)
+    grid.decodeSencode(encodeSudoku(makePuzzle()))
+    userGrid.set({ x: 2, y: 0 }, 5)
 
     const usedBefore = get(usedHints)
 
-    expect(userGrid.applyHint({ x: 2, y: 0 })).toBe(false)
+    expect(userGrid.applyHint({ x: 3, y: 0 })).toBe(false)
     expect(get(usedHints)).toBe(usedBefore)
   })
 })
